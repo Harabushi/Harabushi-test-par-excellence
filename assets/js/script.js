@@ -1,80 +1,71 @@
 let quizEl = document.querySelector("#quiz");
 // let highScoreEl = document.querySelector("#view-high-scores");
-let scoreEl = document.querySelector("score");
-// let questionEl = document.querySelector("#question");
-// let answersEl = document.querySelector("#answer-input");
-// let feedbackEl = document.querySelector("#feedback");
+let timeLeft = 90;
 let questionNumber = 0;
+let gameOver = false;
 
 // Questions
-let questionData = {
-  "questions":[
-    {
-      "question": "Commonly used data types do NOT include:",
-      "answers": [
-        "strings", "booleans", "alerts", "numbers"
-      ]
-    },
-    {
-      "question": "The condition in an if/else statement is enclosed with:",
-      "answers": [
-        "quotes", "curly brackets", "parenthesis", "square brackets"
-      ]
-    },
-    {
-      "question": "Arrays in JavaScript can be used to store:",
-      "answers": [
-        "numbers and strings", "other arrays", "booleans", "all of the above"
-      ]
-    },
-    {
-      "question": "String values must be enclosed within __________ when being assigned to variables.",
-      "answers": [
-        "commas", "curly brackets", "quotes", "parenthesis"
-      ]
-    },
-    {
-      "question": "A very useful tool used during development and debugging for printing content to the debugger is:",
-      "answers": [
-        "JavaScript", "terminal/bash", "for loops", "console.log"
-      ]
-    }
-  ]
-}
+let questionData = [
+  {
+    "question": "Commonly used data types do NOT include:",
+    "answers": [
+      "strings", "booleans", "alerts", "numbers"
+    ],
+    "correctAnswer": "alerts",
+  },
+  {
+    "question": "The condition in an if/else statement is enclosed with:",
+    "answers": [
+      "quotes", "curly brackets", "parenthesis", "square brackets"
+    ],
+    "correctAnswer": "parenthesis",
+  },
+  {
+    "question": "Arrays in JavaScript can be used to store:",
+    "answers": [
+      "numbers and strings", "other arrays", "booleans", "all of the above"
+    ],
+    "correctAnswer": "all of the above",
+  },
+  {
+    "question": "String values must be enclosed within __________ when being assigned to variables.",
+    "answers": [
+      "commas", "curly brackets", "quotes", "parenthesis"
+    ],
+    "correctAnswer": "quotes",
+  },
+  {
+    "question": "A very useful tool used during development and debugging for printing content to the debugger is:",
+    "answers": [
+      "JavaScript", "terminal/bash", "for loops", "console.log"
+    ],
+    "correctAnswer": "console.log",
+  }
+]
 
 // user input section
 function quizButtonHandler(event) {
   //console.log(event)
   let targetEl = event.target;
+  let feedbackEl = document.createElement("div");
+  feedbackEl.setAttribute("id", "feedback");
 
   if (targetEl.matches("#start-btn")){
     startQuiz();
   }
-  else if (targetEl.matches("#answer-btn1")){
-    let feedbackEl = document.createElement("div");
-    feedbackEl.setAttribute("id", "feedback");
-    feedbackEl.innerHTML = "<h3>You answered #1</h3>";
-    quizEl.appendChild(feedbackEl)
-    completionCheck();
-  }
-  else if (targetEl.matches("#answer-btn2")){
-    let feedbackEl = document.createElement("div");
-    feedbackEl.setAttribute("id", "feedback");
-    feedbackEl.innerHTML = "<h3>You answered #2</h3>";
-    quizEl.appendChild(feedbackEl)
-    completionCheck();
-  }
-  else if (targetEl.matches("#answer-btn3")){
-    let feedbackEl = document.createElement("div");
-    feedbackEl.setAttribute("id", "feedback");
-    feedbackEl.innerHTML = "<h3>You answered #3</h3>";
-    quizEl.appendChild(feedbackEl)
-    completionCheck();
-  }
-  else if (targetEl.matches("#answer-btn4")){
-    let feedbackEl = document.createElement("div");
-    feedbackEl.setAttribute("id", "feedback");
-    feedbackEl.innerHTML = "<h3>You answered #4</h3>";
+  else if (targetEl.matches("#answer-btn")){
+    let quizFeedback = document.querySelector("main > div[id ='feedback']");
+    if (quizFeedback) {
+      quizFeedback.remove();
+    };
+    if (targetEl.textContent.substring(3) === questionData[questionNumber - 1].correctAnswer){
+      feedbackEl.innerHTML = "<h3>You answered " + targetEl.textContent.substring(3) + ", which is correct!</h3>";
+    }
+    else {
+      feedbackEl.innerHTML = "<h3>You answered " + targetEl.textContent.substring(3) + ", which is incorrect.</h3>";
+      timeLeft -= 10;
+    }
+        
     quizEl.appendChild(feedbackEl)
     completionCheck();
   }
@@ -84,38 +75,61 @@ function quizButtonHandler(event) {
 function startQuiz () {
 
   alert("The quiz has started!")
-  // clearPage();
+  timerScore();
   nextQuestion();
 
+  let quizFeedback = document.querySelector("main > div[id ='feedback']");
+  if (quizFeedback) {
+    quizFeedback.remove();
+  }
+
 }
+
+function timerScore () {
+  let timer = setInterval(function(){
+    if(timeLeft <= -1 || gameOver){
+      clearInterval(timer);
+      score();
+    } else {
+      document.getElementById("score").innerHTML = timeLeft;
+    }
+    timeLeft -= 1;
+  }, 1000);
+};
 
 // clearing fields
 function clearPage () {
   // empty fields
   let quizTitle = document.querySelector("main > div[id ='question']");
   let quizText = document.querySelector("main > div[id ='answer-input']");
-  let quizButton = document.querySelector("main > div[id ='feedback']");
+  let quizFeedback = document.querySelector("main > div[id ='feedback']");
 
-  quizTitle.remove();
-  quizText.remove();
-  quizButton.remove();
+  if (quizTitle) {
+    quizTitle.remove();
+  }
+  if (quizText) {
+    quizText.remove();
+  }
+  if (quizFeedback) {
+    setTimeout(function(){
+    quizFeedback.remove();}, 2000);
+  }
 }
 
 function nextQuestion () {
   clearPage();
 
   //establish question
-  let thisQuestion = questionData.questions[questionNumber];
+  let thisQuestion = questionData[questionNumber];
 
   // set up question title
   let questionEl = document.createElement("div");
   questionEl.setAttribute("id", "question");
   questionEl.innerHTML = "<h2>" + thisQuestion.question + "</h2>"
-  // askedQuestion.className = "question-" + questionNumber;
-  // askedQuestion.textContent = thisQuestion.question;
 
-  quizEl.appendChild(questionEl);
+  //quizEl.appendChild(questionEl);
 
+  // set up answer choices
   let answersEl = document.createElement("div");
   answersEl.setAttribute("id", "answer-input")
   
@@ -124,26 +138,40 @@ function nextQuestion () {
     let answerButton = document.createElement("button")
     answerButton.className = "btn"
     answerButton.textContent = [i+1] + "." + " " + thisQuestion.answers[i];
-    answerButton.setAttribute("id", "answer-btn" + [i+1])
+    answerButton.setAttribute("id", "answer-btn")
 
     answersEl.appendChild(answerButton)
   }
 
-  quizEl.appendChild(answersEl);
+  quizEl.prepend(answersEl);
+  quizEl.prepend(questionEl);
   questionNumber++;
   //console.log(thisQuestion.question)
 }
 
 function completionCheck() {
 
-  // if (questionNumber === questionData.length){
-  //   score ()
-  // }
-  // else if ()
-  // else {
+  if (questionNumber === questionData.length){
+    gameOver = true;
+  }
+  else {
     nextQuestion();
-  //}
+  }
 }
+
+function score (){
+  clearPage();
+  alert("The game is over!")
+}
+
+// function endScreen (){
+//   let questionEl = document.createElement("div");
+//   questionEl.setAttribute("id", "question");
+//   questionEl.innerHTML = "<h2>" + thisQuestion.question + "</h2>"
+
+//   let answersEl = document.createElement("div");
+//   answersEl.setAttribute("id", "answer-input")
+// }
 
 quizEl.addEventListener("click", quizButtonHandler);
 // highScoreEl.addEventListener("click", viewHighScore);
