@@ -51,10 +51,20 @@ main .answer-selection {
   background-color: cadetblue;
 } */
 
-main .feedback {
+main #feedback {
   border-top: solid 5px lightgray;
   color: gray;
   margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.text-input {
+  font-size: 2.2rem;
+  border-radius: 12px;
+  border-color: var(--primary-color);
+  padding: 10px;
+  color: var(--primary-color);
 }
 
 .btn {

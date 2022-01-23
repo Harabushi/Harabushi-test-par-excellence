@@ -1,8 +1,9 @@
 let quizEl = document.querySelector("#quiz");
-// let highScoreEl = document.querySelector("#view-high-scores");
 let timeLeft = 90;
 let questionNumber = 0;
 let gameOver = false;
+let playerScore = 0;
+let highScores = [];
 
 // Questions
 let questionData = [
@@ -45,6 +46,7 @@ let questionData = [
 
 // user input section
 function quizButtonHandler(event) {
+  event.preventDefault();
   //console.log(event)
   let targetEl = event.target;
   let feedbackEl = document.createElement("div");
@@ -69,6 +71,21 @@ function quizButtonHandler(event) {
     quizEl.appendChild(feedbackEl)
     completionCheck();
   }
+  else if (targetEl.matches("#score-submit")){
+      // check for null inputs
+      let playerInitials = document.querySelector("input[class='text-input']").value;
+    if (!playerInitials) {
+      alert("You need to fill in your initials");
+      return false;
+    };
+    
+    let highScoreObj = {
+      name: playerInitials,
+      type: playerScore
+    };
+    highScores.push(highScoreObj);
+    saveHighScores();
+  }
 };
 
 // start of the quiz game
@@ -87,12 +104,11 @@ function startQuiz () {
 
 function timerScore () {
   let timer = setInterval(function(){
-    if(timeLeft <= -1 || gameOver){
+    document.getElementById("score").innerHTML = timeLeft;
+    if(timeLeft <= 0 || gameOver){
       clearInterval(timer);
       score();
-    } else {
-      document.getElementById("score").innerHTML = timeLeft;
-    }
+    };
     timeLeft -= 1;
   }, 1000);
 };
@@ -161,17 +177,44 @@ function completionCheck() {
 
 function score (){
   clearPage();
-  alert("The game is over!")
+  endScreen();
 }
 
-// function endScreen (){
-//   let questionEl = document.createElement("div");
-//   questionEl.setAttribute("id", "question");
-//   questionEl.innerHTML = "<h2>" + thisQuestion.question + "</h2>"
+function endScreen (){
+  playerScore = timeLeft
+  let endGameEl = document.createElement("div");
+  endGameEl.setAttribute("id", "question");
+  endGameEl.innerHTML = "<h2>All Done!</h2>";
 
-//   let answersEl = document.createElement("div");
-//   answersEl.setAttribute("id", "answer-input")
-// }
+  let finalScoreEl = document.createElement("div");
+  finalScoreEl.setAttribute("id", "answer-input");
+  finalScoreEl.innerHTML = "<h3>Final Score " + playerScore + "</h3>";
+
+  let submitInitials = document.createElement("div");
+  submitInitials.setAttribute("id", "feedback");
+  submitInitials.innerHTML = "<form><input type='text' class='text-input' placeholder='Enter Initials' /><button class='btn' id='score-submit' type='submit'>Submit</button></form>";
+
+  quizEl.appendChild(endGameEl);
+  quizEl.appendChild(finalScoreEl);
+  quizEl.appendChild(submitInitials)
+}
+
+function saveHighScores(){
+  localStorage.setItem("highscores", JSON.stringify(highScores))
+}
+
+function loadScores(){
+  debugger;
+  let savedScores = localStorage.getItem("highscores");
+
+  if (!savedScores) {
+    return false;
+  }
+
+  savedScores = JSON.parse(savedScores);
+  highScores.push(savedScores)
+}
 
 quizEl.addEventListener("click", quizButtonHandler);
 // highScoreEl.addEventListener("click", viewHighScore);
+loadScores();
