@@ -5,6 +5,24 @@ let questionEl = document.querySelector("#question");
 let answersEl = document.querySelector("#answer-input");
 let feedbackEl = document.querySelector("#feedback");
 
+// Questions
+let questionData = {
+  "questions":[
+    {
+      "question": "Commonly used data types do NOT include:",
+      "answers": [
+        "strings", "booleans", "alerts", "numbers"
+      ]
+    },
+    {
+      "question": "The condition in an if/else statement is enclosed with __________.",
+      "answers": [
+        "quotes", "curly brackets", "parenthesis", "square brackets"
+      ]
+    }
+  ]
+}
+
 function quizButtonHandler(event) {
   //console.log(event)
   let targetEl = event.target;
@@ -29,19 +47,40 @@ function quizButtonHandler(event) {
 function startQuiz () {
   // throw in prompt confirm with rules?
   // empty fields to prepare for quiz
-  let title = document.querySelector("#title");
+  // "main > div > h2"
+  let startTitle = document.querySelector("#start-title");
   let startText = document.querySelector("#start-text");
   let startButton = document.querySelector("#start-btn");
 
-  title.parentElement.removeChild(title);
+  startTitle.parentElement.removeChild(startTitle);
   startText.parentElement.removeChild(startText);
   startButton.parentElement.removeChild(startButton);
+
+  alert("The quiz has started!")
 
   nextQuestion();
 }
 
 function nextQuestion () {
-  alert("The quiz has started!")
+  let thisQuestion = questionData.questions[0];
+  let askedQuestion = document.createElement("h2");
+  // setAttribute("id", "question-1") potentially
+  askedQuestion.className = "question-0";
+  askedQuestion.textContent = thisQuestion.question;
+
+  questionEl.appendChild(askedQuestion);
+
+  // need to iterate this I think
+  for (let i = 0; i <thisQuestion.answers.length; i++) {
+    //console.log(thisQuestion.answers[i])
+    let answerButton = document.createElement("button")
+    answerButton.className = "btn"
+    answerButton.textContent = [i+1] + "." + " " + thisQuestion.answers[i];
+    answerButton.setAttribute("id", [i])
+
+    answersEl.appendChild(answerButton)
+  }
+  //console.log(thisQuestion.question)
 }
 
 quizEl.addEventListener("click", quizButtonHandler);
