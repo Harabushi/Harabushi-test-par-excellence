@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <title>Harabushi's Coding Quiz</title>
+</head>
+<body>
+
+  <header>
+    <!-- high scores link -->
+    <div class="view-high-scores">
+      <button class="btn" id="view-high-scores">View High Scores</button>
+    </div>
+    <!-- quiz title -->
+    <div class="title" id="title">
+    <h1>Harabushi's</h1>
+    <h2>Javascript</h2>
+    <h2>~Par Excellence~</h2>
+    </div>
+    <!-- time clock -->
+    <div>
+      <h2 class="time" id="time">
+        time: <span id="countdown">90</span>
+        </h2>
+    </div>
+  </header>
+
+  <main>
+    <div class="question" id="question">
+      <h2>Coding Quiz Challenge</h2>
+    </div>
+    <div class="answer-selection" id="answer-selection">
+      A rugged Javascript quiz to test your knowledge! Try to answer the questions 
+      within the time limit, but keep in mind - the remaining time is your score and each 
+      wrong answer costs you 10 seconds!
+    </div>
+    <div class="feedback" id="feedback">
+      <button class="btn" id="start-btn">Start Quiz</button>
+    </div>
+  </main>
+
+  <script src="./assets/js/script.js"></script>
+</body>
+</html>
