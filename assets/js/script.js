@@ -1,9 +1,16 @@
 let quizEl = document.querySelector("#quiz");
+let highScoreEl = document.querySelector("#view-high-scores");
 let timeLeft = 90;
 let questionNumber = 0;
 let gameOver = false;
 let playerScore = 0;
-let highScores = [];
+let highScores;
+if (localStorage.getItem("highscores")){
+  highScores = JSON.parse(localStorage.getItem("highscores"));
+}
+else {
+  highScores = []
+}
 
 // Questions
 let questionData = [
@@ -55,6 +62,7 @@ function quizButtonHandler(event) {
   if (targetEl.matches("#start-btn")){
     startQuiz();
   }
+  // answer buttons
   else if (targetEl.matches("#answer-btn")){
     let quizFeedback = document.querySelector("main > div[id ='feedback']");
     if (quizFeedback) {
@@ -71,11 +79,12 @@ function quizButtonHandler(event) {
     quizEl.appendChild(feedbackEl)
     completionCheck();
   }
+  // high score submit
   else if (targetEl.matches("#score-submit")){
       // check for null inputs
       let playerInitials = document.querySelector("input[class='text-input']").value;
-    if (!playerInitials) {
-      alert("You need to fill in your initials");
+    if (!playerInitials || playerInitials.length > 5) {
+      alert("You need to fill in your initials, max 5 characters");
       return false;
     };
     
@@ -83,8 +92,19 @@ function quizButtonHandler(event) {
       name: playerInitials,
       type: playerScore
     };
+    console.log(highScores)
     highScores.push(highScoreObj);
-    saveHighScores();
+    console.l
+    // saveHighScores();
+    localStorage.setItem("highscores", JSON.stringify(highScores))
+    highScoreScreen();
+  }
+  else if (targetEl.matches("#clear-scores")){
+    highScores = [];
+    localStorage.setItem("highscores", JSON.stringify(highScores))
+  }
+  else if (targetEl.matches("#go-back")){
+    document.location.reload();
   }
 };
 
@@ -102,6 +122,7 @@ function startQuiz () {
 
 }
 
+// game timer
 function timerScore () {
   let timer = setInterval(function(){
     document.getElementById("score").innerHTML = timeLeft;
@@ -115,7 +136,6 @@ function timerScore () {
 
 // clearing fields
 function clearPage () {
-  // empty fields
   let quizTitle = document.querySelector("main > div[id ='question']");
   let quizText = document.querySelector("main > div[id ='answer-input']");
   let quizFeedback = document.querySelector("main > div[id ='feedback']");
@@ -132,6 +152,7 @@ function clearPage () {
   }
 }
 
+// question generation
 function nextQuestion () {
   clearPage();
 
@@ -142,8 +163,6 @@ function nextQuestion () {
   let questionEl = document.createElement("div");
   questionEl.setAttribute("id", "question");
   questionEl.innerHTML = "<h2>" + thisQuestion.question + "</h2>"
-
-  //quizEl.appendChild(questionEl);
 
   // set up answer choices
   let answersEl = document.createElement("div");
@@ -165,8 +184,8 @@ function nextQuestion () {
   //console.log(thisQuestion.question)
 }
 
+// check for game completion
 function completionCheck() {
-
   if (questionNumber === questionData.length){
     gameOver = true;
   }
@@ -175,6 +194,7 @@ function completionCheck() {
   }
 }
 
+// post quiz screens
 function score (){
   clearPage();
   endScreen();
@@ -199,12 +219,45 @@ function endScreen (){
   quizEl.appendChild(submitInitials)
 }
 
-function saveHighScores(){
-  localStorage.setItem("highscores", JSON.stringify(highScores))
+function highScoreScreen(){
+  clearPage();
+  let quizFeedback = document.querySelector("main > div[id ='feedback']");
+  if (quizFeedback) {
+    quizFeedback.remove();
+  }
+
+  let highScoreTitleEl = document.createElement("div");
+  highScoreTitleEl.setAttribute("id", "question");
+  highScoreTitleEl.innerHTML = "<h2>High Scores</h2>";
+
+  let fullScoreListEl = document.createElement("div");
+  fullScoreListEl.setAttribute("id", "answer-input");
+
+  for (i = 0; i < highScores.length; i++){
+    // debugger;
+    let scoreListEl = document.createElement("span")
+    let newLine = document.createElement("br")
+    scoreListEl.textContent = highScores[i].name + " " + highScores[i].type;
+    fullScoreListEl.appendChild(scoreListEl);
+    fullScoreListEl.appendChild(newLine);
+
+  }
+
+  let scoreButtonEl = document.createElement("div");
+  scoreButtonEl.setAttribute("id", "feedback");
+  scoreButtonEl.innerHTML = "<button class='btn' id='go-back'>Go Back</button><button class='btn' id='clear-scores'>Clear Scores</button>";
+
+  quizEl.appendChild(highScoreTitleEl);
+  quizEl.appendChild(fullScoreListEl);
+  quizEl.appendChild(scoreButtonEl)
 }
 
+// local storage interactions
+// function saveHighScores(){
+//   localStorage.setItem("highscores", JSON.stringify(highScores))
+// }
+
 function loadScores(){
-  debugger;
   let savedScores = localStorage.getItem("highscores");
 
   if (!savedScores) {
@@ -212,9 +265,14 @@ function loadScores(){
   }
 
   savedScores = JSON.parse(savedScores);
-  highScores.push(savedScores)
+ 
+  console.log("this is saved scores" + JSON.stringify(savedScores));
+  console.log("this is high scores before push" + JSON.stringify(highScores));
+
+  highScores.push(savedScores);
+  console.log("this is high scores after push" + JSON.stringify(highScores));
 }
 
 quizEl.addEventListener("click", quizButtonHandler);
-// highScoreEl.addEventListener("click", viewHighScore);
-loadScores();
+highScoreEl.addEventListener("click", highScoreScreen);
+// loadScores();
