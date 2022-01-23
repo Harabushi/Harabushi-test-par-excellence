@@ -1,9 +1,10 @@
 let quizEl = document.querySelector("#quiz");
 // let highScoreEl = document.querySelector("#view-high-scores");
 let scoreEl = document.querySelector("score");
-let questionEl = document.querySelector("#question");
-let answersEl = document.querySelector("#answer-input");
-let feedbackEl = document.querySelector("#feedback");
+// let questionEl = document.querySelector("#question");
+// let answersEl = document.querySelector("#answer-input");
+// let feedbackEl = document.querySelector("#feedback");
+let questionNumber = 0;
 
 // Questions
 let questionData = {
@@ -15,14 +16,33 @@ let questionData = {
       ]
     },
     {
-      "question": "The condition in an if/else statement is enclosed with __________.",
+      "question": "The condition in an if/else statement is enclosed with:",
       "answers": [
         "quotes", "curly brackets", "parenthesis", "square brackets"
+      ]
+    },
+    {
+      "question": "Arrays in JavaScript can be used to store:",
+      "answers": [
+        "numbers and strings", "other arrays", "booleans", "all of the above"
+      ]
+    },
+    {
+      "question": "String values must be enclosed within __________ when being assigned to variables.",
+      "answers": [
+        "commas", "curly brackets", "quotes", "parenthesis"
+      ]
+    },
+    {
+      "question": "A very useful tool used during development and debugging for printing content to the debugger is:",
+      "answers": [
+        "JavaScript", "terminal/bash", "for loops", "console.log"
       ]
     }
   ]
 }
 
+// user input section
 function quizButtonHandler(event) {
   //console.log(event)
   let targetEl = event.target;
@@ -30,57 +50,99 @@ function quizButtonHandler(event) {
   if (targetEl.matches("#start-btn")){
     startQuiz();
   }
-  // else if (targetEl.matches(answr-1-btn)){
-  //   alert("You have selected answer #1")
-  // }
-  // else if (targetEl.matches(answr-2-btn)){
-  //   alert("You have selected answer #2")
-  // }
-  // else if (targetEl.matches(answr-3-btn)){
-  //   alert("You have selected answer #3")
-  // }
-  // else if (targetEl.matches(answr-4-btn)){
-  //   alert("You have selected answer #4")
-  // }
+  else if (targetEl.matches("#answer-btn1")){
+    let feedbackEl = document.createElement("div");
+    feedbackEl.setAttribute("id", "feedback");
+    feedbackEl.innerHTML = "<h3>You answered #1</h3>";
+    quizEl.appendChild(feedbackEl)
+    completionCheck();
+  }
+  else if (targetEl.matches("#answer-btn2")){
+    let feedbackEl = document.createElement("div");
+    feedbackEl.setAttribute("id", "feedback");
+    feedbackEl.innerHTML = "<h3>You answered #2</h3>";
+    quizEl.appendChild(feedbackEl)
+    completionCheck();
+  }
+  else if (targetEl.matches("#answer-btn3")){
+    let feedbackEl = document.createElement("div");
+    feedbackEl.setAttribute("id", "feedback");
+    feedbackEl.innerHTML = "<h3>You answered #3</h3>";
+    quizEl.appendChild(feedbackEl)
+    completionCheck();
+  }
+  else if (targetEl.matches("#answer-btn4")){
+    let feedbackEl = document.createElement("div");
+    feedbackEl.setAttribute("id", "feedback");
+    feedbackEl.innerHTML = "<h3>You answered #4</h3>";
+    quizEl.appendChild(feedbackEl)
+    completionCheck();
+  }
 };
 
+// start of the quiz game
 function startQuiz () {
-  // throw in prompt confirm with rules?
-  // empty fields to prepare for quiz
-  // "main > div > h2"
-  let startTitle = document.querySelector("#start-title");
-  let startText = document.querySelector("#start-text");
-  let startButton = document.querySelector("#start-btn");
-
-  startTitle.parentElement.removeChild(startTitle);
-  startText.parentElement.removeChild(startText);
-  startButton.parentElement.removeChild(startButton);
 
   alert("The quiz has started!")
-
+  // clearPage();
   nextQuestion();
+
+}
+
+// clearing fields
+function clearPage () {
+  // empty fields
+  let quizTitle = document.querySelector("main > div[id ='question']");
+  let quizText = document.querySelector("main > div[id ='answer-input']");
+  let quizButton = document.querySelector("main > div[id ='feedback']");
+
+  quizTitle.remove();
+  quizText.remove();
+  quizButton.remove();
 }
 
 function nextQuestion () {
-  let thisQuestion = questionData.questions[0];
-  let askedQuestion = document.createElement("h2");
-  // setAttribute("id", "question-1") potentially
-  askedQuestion.className = "question-0";
-  askedQuestion.textContent = thisQuestion.question;
+  clearPage();
 
-  questionEl.appendChild(askedQuestion);
+  //establish question
+  let thisQuestion = questionData.questions[questionNumber];
 
-  // need to iterate this I think
+  // set up question title
+  let questionEl = document.createElement("div");
+  questionEl.setAttribute("id", "question");
+  questionEl.innerHTML = "<h2>" + thisQuestion.question + "</h2>"
+  // askedQuestion.className = "question-" + questionNumber;
+  // askedQuestion.textContent = thisQuestion.question;
+
+  quizEl.appendChild(questionEl);
+
+  let answersEl = document.createElement("div");
+  answersEl.setAttribute("id", "answer-input")
+  
   for (let i = 0; i <thisQuestion.answers.length; i++) {
     //console.log(thisQuestion.answers[i])
     let answerButton = document.createElement("button")
     answerButton.className = "btn"
     answerButton.textContent = [i+1] + "." + " " + thisQuestion.answers[i];
-    answerButton.setAttribute("id", [i])
+    answerButton.setAttribute("id", "answer-btn" + [i+1])
 
     answersEl.appendChild(answerButton)
   }
+
+  quizEl.appendChild(answersEl);
+  questionNumber++;
   //console.log(thisQuestion.question)
+}
+
+function completionCheck() {
+
+  // if (questionNumber === questionData.length){
+  //   score ()
+  // }
+  // else if ()
+  // else {
+    nextQuestion();
+  //}
 }
 
 quizEl.addEventListener("click", quizButtonHandler);
