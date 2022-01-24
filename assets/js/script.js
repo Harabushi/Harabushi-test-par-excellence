@@ -4,9 +4,11 @@ let timeLeft = 90;
 let questionNumber = 0;
 let gameOver = false;
 let playerScore = 0;
+// much easier way to acces local storage objects
 let highScores;
 if (localStorage.getItem("highscores")){
   highScores = JSON.parse(localStorage.getItem("highscores"));
+  console.log(highScores)
 }
 else {
   highScores = []
@@ -257,21 +259,19 @@ function highScoreScreen(){
 //   localStorage.setItem("highscores", JSON.stringify(highScores))
 // }
 
-function loadScores(){
-  let savedScores = localStorage.getItem("highscores");
 
-  if (!savedScores) {
-    return false;
-  }
+// not great way to load array of objects from local storage
+// function loadScores(){
+//   let savedScores = localStorage.getItem("highscores");
 
-  savedScores = JSON.parse(savedScores);
+//   if (!savedScores) {
+//     return false;
+//   }
+
+//   savedScores = JSON.parse(savedScores);
  
-  console.log("this is saved scores" + JSON.stringify(savedScores));
-  console.log("this is high scores before push" + JSON.stringify(highScores));
-
-  highScores.push(savedScores);
-  console.log("this is high scores after push" + JSON.stringify(highScores));
-}
+//   highScores.push(savedScores);
+// }
 
 quizEl.addEventListener("click", quizButtonHandler);
 highScoreEl.addEventListener("click", highScoreScreen);
