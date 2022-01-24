@@ -59,6 +59,26 @@ main #feedback {
   justify-content: space-around;
 }
 
+main #answer-input .btn{
+  display: flex;
+  margin: 15px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+
+main #answer-btn .btn{
+  max-width: 50%;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* main #answer-input btn {
+  flex-basis: 50%;
+} */
+
 .text-input {
   font-size: 2.2rem;
   border-radius: 12px;

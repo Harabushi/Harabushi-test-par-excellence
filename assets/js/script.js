@@ -1,6 +1,6 @@
 let quizEl = document.querySelector("#quiz");
 let highScoreEl = document.querySelector("#view-high-scores");
-let timeLeft = 90;
+let timeLeft = 900;
 let questionNumber = 0;
 let gameOver = false;
 let playerScore = 0;
